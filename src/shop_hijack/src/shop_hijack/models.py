@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, Text
+from zope.interface import implementer
+
+from . import Base
+from .interfaces import IComment, IIncident, IEmployee, IShop
 
 
-Base = declarative_base()
-
-
+@implementer(IComment)
 class Comment(Base):
     """TODO: we want a docstring. Just do it _/.
     """
-    implements(IComment)
-
     __tablename__ = 'comments'
 
     id = Column('id', Integer, primary_key=True)
@@ -20,11 +20,10 @@ class Comment(Base):
     text = Column('text', Text)
 
 
+@implementer(IIncident)
 class Incident(Base):
     """TODO: we want a docstring. Just do it _/.
     """
-    implements(IIncident)
-
     __tablename__ = 'incidents'
 
     id = Column('id', Integer, primary_key=True)
@@ -36,12 +35,11 @@ class Incident(Base):
         "Comment", backref="incident",
         collection_class=set, cascade="all, delete-orphan")
 
-    
+
+@implementer(IEmployee)
 class Employee(Base):
     """TODO: we want a docstring. Just do it _/.
     """
-    implements(IEmployee)
-
     __tablename__ = 'employees'
 
     id = Column('id', Integer, primary_key=True)
@@ -50,11 +48,10 @@ class Employee(Base):
     position = Column('position', String(255))
 
 
+@implementer(IShop)
 class Shop(Base):
     """TODO: we want a docstring. Just do it _/.
     """
-    implements(IShop)
-
     __tablename__ = 'shops'
 
     id = Column('id', Integer, primary_key=True)

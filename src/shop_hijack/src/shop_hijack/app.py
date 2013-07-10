@@ -1,55 +1,60 @@
 # -*- coding: utf-8 -*-
 
-from cromlech.configuration.utils import load_zcml
-from cromlech.i18n import register_allowed_languages
-from cromlech.dawnlight import DawnlightPublisher
-from cromlech.browser import PublicationBeginsEvent, PublicationEndsEvent
+import transaction
 from cromlech.browser import IPublicationRoot
-from zope.interface import implements
-from zope.location import Location
-from zope.event import notify
+from cromlech.configuration.utils import load_zcml
+from cromlech.dawnlight import DawnlightPublisher
+from cromlech.dawnlight.directives import traversable
+from cromlech.i18n import register_allowed_languages
+from cromlech.sqlalchemy import SQLAlchemySession
+from cromlech.sqlalchemy import create_and_register_engine
 from cromlech.webob.request import Request
-from cromlech.dawnlight import ViewLookup
-from cromlech.dawnlight import view_locator, query_view
 from zope.component import getGlobalSiteManager
-from ..utils import view_lookup, Site
+from zope.interface import implementer
+from zope.location import Location
+
+from . import DB_KEY, Base
+from .utils import view_lookup, Site
+from .containers import Shops, Employees, Incidents
 
 
+@implementer(IPublicationRoot)
 class Root(Location):
-    implements(IPublicationRoot)
-
-    title = u"Example Site"
-    description = u"An Example application."
-
+    traversable('shops', 'employees', 'incidents')
+    
     def __init__(self, name):
         self.name = name
+        self.shops = Shops(self, 'shops')
+        self.employees = Employees(self, 'employees')
+        self.incidents = Incidents(self, 'incidents')
 
     def getSiteManager(self):
         return getGlobalSiteManager()
-        
+
 
 class Application(object):
 
-    def __init__(self, global_cond, name, zcml_file, langs='en'):
-        # We register our SQLengine under a given name
-        engine = create_and_register_engine(url, name)
-        
-        # We bind out SQLAlchemy definition to the engine
-        engine.bind(Library)
+    def __init__(self, global_conf, url, zcml, langs='en'):
+        # load the ZCML
+        load_zcml(zcml)
 
-        # We now instanciate the TrajectApplication
-        # The name and engine are passed, to be used for the querying.
-        self.name = name
+        # register the allowed languages
+        register_allowed_languages([lang.strip() for lang in langs.split(',')])
+
+        # create, register and populate the base DB/Engine
+        engine = create_and_register_engine(url, DB_KEY)
+        engine.bind(Base)
+
+        # instanciate and keep the useful things
+        self.root = Root()
         self.engine = engine
         self.publisher = DawnlightPublisher(view_lookup=view_lookup)
-        
-        # We register our Traject patterns.
-        # TODO
-
-        return app
 
     def __call__(self, environ, start_response):
-        with SQLAlchemySession(self.engine):
-            with transaction.manager:
-                with Interaction():
-                    # todo
+        request = Request(environ)
+        with transaction.manager as tm:
+            with Site(self.root) as root:
+                with SQLAlchemySession(self.engine, transaction_manager=tm):
+                    response = self.publisher.publish(
+                        request, root, handle_errors=True)
+        return response(environ, start_response)

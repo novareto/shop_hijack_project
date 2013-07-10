@@ -15,7 +15,7 @@ class Site(object):
     
     def __enter__(self):
         setSite(self.root)
-        return root
+        return self.root
         
     def __exit__(self, exc_type, exc_value, traceback):
         setSite()
