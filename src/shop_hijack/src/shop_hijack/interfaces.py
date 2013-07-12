@@ -1,19 +1,46 @@
 # -*- coding: utf-8 -*-
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
+from zope.schema import TextLine, Choice
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 
-class IComment(Interface):
+positions = SimpleVocabulary((
+    SimpleTerm(value="Manager", title=u"Manager"),
+    SimpleTerm(value="Employee", title=u"Employee"),
+    ))
+
+
+class IContent(Interface):
     pass
 
 
-class IIncident(Interface):
+class IComment(IContent):
     pass
 
 
-class IEmployee(Interface):
+class IIncident(IContent):
     pass
 
 
-class IShop(Interface):
+class IEmployee(IContent):
+    fullname = TextLine(title=u'Full name')
+    position = Choice(title=u"Position in the company",
+                      vocabulary=positions)
+
+
+class IShop(IContent):
     pass
+
+
+class IContainer(Interface):
+
+    model = Attribute("The model class")
+    
+    def add(item):
+        """
+        """
+
+    def delete(item):
+        """
+        """

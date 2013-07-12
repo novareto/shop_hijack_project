@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from dolmen.content import schema
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, Text
 from zope.interface import implementer
@@ -8,10 +9,10 @@ from . import Base
 from .interfaces import IComment, IIncident, IEmployee, IShop
 
 
-@implementer(IComment)
 class Comment(Base):
     """TODO: we want a docstring. Just do it _/.
     """
+    schema(IComment)
     __tablename__ = 'comments'
 
     id = Column('id', Integer, primary_key=True)
@@ -20,10 +21,10 @@ class Comment(Base):
     text = Column('text', Text)
 
 
-@implementer(IIncident)
 class Incident(Base):
     """TODO: we want a docstring. Just do it _/.
     """
+    schema(IIncident)
     __tablename__ = 'incidents'
 
     id = Column('id', Integer, primary_key=True)
@@ -34,12 +35,12 @@ class Incident(Base):
     comments = relationship(
         "Comment", backref="incident",
         collection_class=set, cascade="all, delete-orphan")
+    
 
-
-@implementer(IEmployee)
 class Employee(Base):
     """TODO: we want a docstring. Just do it _/.
     """
+    schema(IEmployee)
     __tablename__ = 'employees'
 
     id = Column('id', Integer, primary_key=True)
@@ -48,13 +49,14 @@ class Employee(Base):
     position = Column('position', String(255))
 
 
-@implementer(IShop)
 class Shop(Base):
     """TODO: we want a docstring. Just do it _/.
     """
+    schema(IShop)
     __tablename__ = 'shops'
 
     id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(255))
     address = Column('address', Text)
     
     incidents = relationship(

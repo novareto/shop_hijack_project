@@ -11,11 +11,11 @@ use = egg:cromlech.i18n#locale
 
 [app:shop_hijack]
 use = egg:shop_hijack#app
-name = shop_hijack
-zcml_file = ${zcml:output}
+langs = en, de, fr
+url = sqlite:///${buildout:directory}/shop.db
+zcml = ${zcml:output}
 
 [server:main]
 use = egg:Paste#http
 host = 0.0.0.0
 port = 8080
-

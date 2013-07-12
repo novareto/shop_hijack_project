@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+
+import os
+from dolmen.template import TALTemplate
+
+
+TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'templates')
+
+
+def get_template(filename, dir=None):
+    if dir:
+        TEMPLATES_DIR = os.path.join(os.path.dirname(dir), 'templates')
+    return TALTemplate(os.path.join(TEMPLATES_DIR, filename))

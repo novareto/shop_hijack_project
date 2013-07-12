@@ -18,17 +18,17 @@ setup(name='shop_hijack',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          'uvc.layout',
+          'dolmen.content',
+          'dolmen.message',
+          'dolmen.menu',
       ],
       entry_points={
          'fanstatic.libraries': [
             'shop_hijack = shop_hijack.resources:library',
          ],
          'paste.app_factory': [
-             'app = shop_hijack.utils:app',
-         ],
-         'paste.filter_factory': [
-             'global_config = shop_hijack.utils:configuration',
+             'app = shop_hijack.app:app_factory',
          ],
       }
       )

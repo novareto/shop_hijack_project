@@ -2,11 +2,13 @@
 
 from . import DB_KEY
 from .models import Shop, Employee, Incident
-from .interfaces import IShop, IEmployee, IIncident
+from .interfaces import IShop, IEmployee, IIncident, IContainer
 from cromlech.sqlalchemy import get_session
 from zope.location import Location, LocationProxy, locate
+from zope.interface import implementer
 
 
+@implementer(IContainer)
 class SQLContainer(Location):
 
     model = None
@@ -18,7 +20,10 @@ class SQLContainer(Location):
 
     def __getitem__(self, id):
         if self.key_converter is not None:
-            key = self.key_converter(id)
+            try:
+                key = self.key_converter(id)
+            except ValueError as e:
+                raise KeyError(id)
         else:
             key = id
 
@@ -37,7 +42,8 @@ class SQLContainer(Location):
     def __iter__(self):
         session = get_session(DB_KEY)
         models = self.query_filters(session.query(self.model))
-        return iter(models)
+        return iter([LocationProxy(model, self, str(model.id))
+                     for model in models])
 
     def add(self, item):
         try:
@@ -56,6 +62,7 @@ class Shops(SQLContainer):
     """A root container, to start browsing from shops
     """
     model = Shop
+    schema = IShop
     key_converter = int
 
 
@@ -63,6 +70,7 @@ class Employees(SQLContainer):
     """A root container, to start browsing from employees
     """
     model = Employee
+    schema = IEmployee
     key_converter = int
 
 
@@ -70,6 +78,7 @@ class Incidents(SQLContainer):
     """A root container, to start browsing from incidents
     """
     model = Incident
+    schema = IIncident
     key_converter = int
 
     def query_filters(self, query):

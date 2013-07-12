@@ -1,0 +1,115 @@
+# -*- coding: utf-8 -*-
+
+from uvclight import Form
+from adv.eyc.browser.interfaces import IEditView
+from adv.eyc.interfaces import IBackOfficeRequest
+from cromlech.browser import request
+from cromlech.browser.exceptions import HTTPFound
+from dolmen.forms.base import DISPLAY, action, FAILURE, SUCCESS
+from dolmen.forms.base.utils import apply_data_event
+from dolmen.location import get_absolute_url
+from dolmen.message import send as website_message
+from dolmen.view import name, title
+from grokcore.component import baseclass
+from zope.interface import implements
+
+
+class Display(Form):
+    baseclass()
+
+    name('index')
+    request(IBackOfficeRequest)
+    title(u"Aperçu")
+
+    mode = DISPLAY
+
+    ignoreContent = False
+
+
+class Edit(Form):
+    baseclass()
+
+    name('edit')
+    request(IBackOfficeRequest)
+    title(u"Édition")
+    implements(IEditView)
+
+    ignoreContent = False
+
+    @action(u'Mettre à jour')
+    def apply_changes(self):
+        data, errors = self.extractData()
+        if errors:
+            self.errors = errors
+            return FAILURE
+
+        apply_data_event(self.fields, self.getContentData(), data)
+        raise HTTPFound(get_absolute_url(self.context, self.request))
+        return SUCCESS
+
+    @action(u'Annuler')
+    def cancel(self):
+        website_message(u"Edition annulée.")
+        url = get_absolute_url(self.context, self.request)
+        raise HTTPFound(url)
+
+
+class Add(Form):
+    baseclass()
+
+    name('add')
+    request(IBackOfficeRequest)
+    title(u"Ajout d'une option")
+
+    ignoreContent = True
+
+    model = None # define in subclass
+
+    @action(u'Ajouter')
+    def apply_changes(self):
+        data, errors = self.extractData()
+        if errors:
+            self.errors = errors
+            return FAILURE
+
+        obj = self.model(**data)
+        self.context.add(obj)
+
+        website_message(u'%s ajoutée avec succès.' % obj.__unicode__())
+        url = get_absolute_url(self.context, self.request)
+        raise HTTPFound(url)
+
+    @action(u'Annuler')
+    def cancel(self):
+        website_message(u"Ajout annulé.")
+        url = get_absolute_url(self.context, self.request)
+        raise HTTPFound(url)
+
+
+class Delete(Form):
+    baseclass()
+
+    name('delete')
+    request(IBackOfficeRequest)
+    title(u"Suppression")
+
+    @property
+    def label(self):
+        # use __unicode__ because of proxy
+        return u"Supprimer %s" % self.context.__unicode__()
+
+    @action(u'Supprimer')
+    def apply_changes(self):
+        container = self.context.__parent__
+        container.delete(self.context)
+
+        website_message(u'%s supprimée avec succès.' %
+            self.context.__unicode__())  # use __unicode__ because of proxy
+        url = get_absolute_url(container, self.request)
+        raise HTTPFound(url)
+
+    @action(u'Annuler')
+    def cancel(self):
+        website_message(u"Suppression annulée.")
+        url = get_absolute_url(self.context, self.request)
+        raise HTTPFound(url)

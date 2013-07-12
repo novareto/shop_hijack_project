@@ -1,0 +1,8 @@
+<div>
+  <ul>
+    <li tal:repeat="employee iter(context)">
+        <a tal:attributes="href view.url(employee)"
+	   tal:content="employee.fullname" />
+    </li>
+  </ul>
+</div>

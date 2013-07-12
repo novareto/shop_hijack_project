@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+
+from . import get_template
+from ..interfaces import IIncident, IEmployee, IShop
+from uvclight import Page
+
+
+class IncidentsList(Page):
+    """
+    """
+    template = get_template('incidents.pt')
+
+
+class EmployeesList(Page):
+    """
+    """
+    template = get_template('employees.pt')
+
+
+class ShopsList(Page):
+    """
+    """
+    template = get_template('shops.pt')
