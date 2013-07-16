@@ -4,8 +4,7 @@ from . import get_template
 from ..app import Root
 from ..containers import Incidents, Shops, Employees
 from uvclight import Page, context, name
-from cromlech.browser import IURL
-from zope.component import getMultiAdapter
+from dolmen.location import get_absolute_url
 
 
 class RootIndex(Page):
@@ -24,9 +23,9 @@ class IncidentsList(Page):
     template = get_template('incidents.pt')
 
     def url(self, item):
-        return str(getMultiAdapter((item, self.request), IURL, u''))
+        return get_absolute_url(item, self.request)
 
-    
+
 class EmployeesList(Page):
     """
     """
@@ -35,8 +34,8 @@ class EmployeesList(Page):
     template = get_template('employees.pt')
 
     def url(self, item):
-        return str(getMultiAdapter((item, self.request), IURL, u''))
-    
+        return get_absolute_url(item, self.request)
+
 
 class ShopsList(Page):
     """
@@ -46,4 +45,4 @@ class ShopsList(Page):
     template = get_template('shops.pt')
 
     def url(self, item):
-        return str(getMultiAdapter((item, self.request), IURL, u''))
+        return get_absolute_url(item, self.request)

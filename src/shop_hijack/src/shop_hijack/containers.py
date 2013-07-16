@@ -14,7 +14,7 @@ class SQLContainer(Location):
     model = None
     key_converter = None
 
-    def __init__(self, parent, name):
+    def __init__(self, parent=None, name=None):
         self.__parent__ = parent
         self.__name__ = name
 

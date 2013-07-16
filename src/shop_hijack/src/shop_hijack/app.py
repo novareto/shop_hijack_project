@@ -22,7 +22,7 @@ from .containers import Shops, Employees, Incidents
 @implementer(IPublicationRoot)
 class Root(Location):
     traversable('shops', 'employees', 'incidents')
-    
+
     def __init__(self):
         self.shops = Shops(self, 'shops')
         self.employees = Employees(self, 'employees')
@@ -32,10 +32,12 @@ class Root(Location):
         return getGlobalSiteManager()
 
 
+ROOT = Root()
+
+
 class Application(object):
 
     def __init__(self, engine):
-        self.root = Root()
         self.engine = engine
         self.publisher = DawnlightPublisher(view_lookup=view_lookup)
 
@@ -43,7 +45,7 @@ class Application(object):
         request = Request(environ)
         with transaction.manager as tm:
             with Interaction():
-                with Site(self.root) as root:
+                with Site(ROOT) as root:
                     with SQLAlchemySession(self.engine, transaction_manager=tm):
                         response = self.publisher.publish(
                             request, root, handle_errors=True)

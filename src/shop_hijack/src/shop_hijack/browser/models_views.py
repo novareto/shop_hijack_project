@@ -2,7 +2,9 @@
 
 from . import get_template
 from ..interfaces import IIncident, IEmployee, IShop
+from ..app import ROOT
 from uvclight import Page, context, name
+from dolmen.location import get_absolute_url
 
 
 class IncidentView(Page):
@@ -20,6 +22,10 @@ class EmployeeView(Page):
     context(IEmployee)
     template = get_template('employee.pt')
 
+    def update(self):
+        shop_base_url = get_absolute_url(Root.shops, self.request)
+        self.shop_url = "%s/%s" % (base_url, self.context.shop_id)
+        
 
 class ShopView(Page):
     """

@@ -1,3 +1,13 @@
 <div>
-
+  <h1 tal:content="context.fullname" />
+  <h2 tal:content="context.position" />
+  <table>
+    <tr tal:condition="context.shop">
+      <th>Shop</th>
+      <td>
+         <a tal:attriubute="href view.shop_url"
+	    tal:content="context.shop.name" />
+      </td>
+    </tr>
+  </table>
 </div>
