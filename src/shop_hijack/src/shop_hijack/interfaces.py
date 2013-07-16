@@ -20,23 +20,60 @@ class IComment(IContent):
 
 
 class IIncident(IContent):
-    pass
+
+    date = Date(
+        title=u"Date of the Hijack",
+    )
+
+    weapons = Choice(
+        title=u"Weapons",
+        vocabulary=('Yes', 'No'),
+    )
 
 
 class IEmployee(IContent):
-    fullname = TextLine(title=u'Full name')
-    position = Choice(title=u"Position in the company",
-                      vocabulary=positions)
+
+    fullname = TextLine(
+        title=u'Full name'
+    )
+
+    position = Choice(
+        title=u"Position in the company",
+        vocabulary=positions,
+    )
 
 
 class IShop(IContent):
-    pass
+
+    mnr = TextLine(
+        title=u"Member Id",
+    )
+
+    name = TextLine(
+        title=u"Name",
+    )
+
+    street = TextLine(
+        title=u"Street",
+    )
+
+    nr = TextLine(
+        title=u"Number"
+    )
+
+    plz = TextLine(
+        title=u"Number of district"
+    )
+
+    place = TextLine(
+        title=u"Place"
+    )
 
 
 class IContainer(Interface):
 
     model = Attribute("The model class")
-    
+
     def add(item):
         """
         """
