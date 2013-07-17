@@ -2,7 +2,8 @@
 
 from . import get_template
 from ..app import Root
-from ..containers import Incidents, Shops, Employees
+from .. import containers
+from ..interfaces import IShops, IComments, IEmployees, IIncidents
 from uvclight import Page, context, name
 from dolmen.location import get_absolute_url
 
@@ -19,7 +20,7 @@ class IncidentsList(Page):
     """
     """
     name('index')
-    context(Incidents)
+    context(IIncidents)
     template = get_template('incidents.pt')
 
     def url(self, item):
@@ -30,7 +31,7 @@ class EmployeesList(Page):
     """
     """
     name('index')
-    context(Employees)
+    context(IEmployees)
     template = get_template('employees.pt')
 
     def url(self, item):
@@ -41,7 +42,7 @@ class ShopsList(Page):
     """
     """
     name('index')
-    context(Shops)
+    context(IShops)
     template = get_template('shops.pt')
 
     def url(self, item):

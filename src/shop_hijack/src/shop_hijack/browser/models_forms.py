@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from uvclight import Form, context
-from uvc.layout.slots.menus import DocumentActionsMenu
 from cromlech.browser import request
 from cromlech.browser.exceptions import HTTPFound
+from dolmen.content import schema
 from dolmen.forms.base import DISPLAY, action, FAILURE, SUCCESS
 from dolmen.forms.base.utils import Fields, apply_data_event
 from dolmen.location import get_absolute_url
+from dolmen.menu import menuentry
 from dolmen.message import send as website_message
 from dolmen.view import name, title
-from dolmen.content import schema
-from grokcore.security import require
 from grokcore.component import baseclass
+from grokcore.security import require
+from uvc.layout.slots.menus import DocumentActionsMenu
+from uvclight import Form, context
 from zope.interface import implements
+
+from ..models import Shop, Comment, Incident, Employee
 from ..interfaces import IContent, IContainer
-from dolmen.menu import menuentry
+from ..interfaces import IShops, IComments, IIncidents, IEmployees
 
 
 @menuentry(DocumentActionsMenu)
@@ -23,13 +26,13 @@ class Edit(Form):
     name('edit')
     title(u"Édition")
     require('zope.Public')
-    
+
     ignoreContent = False
 
     @property
     def fields(self):
         return Fields(*schema.bind().get(self.context))
-    
+
     @action(u'Update')
     def apply_changes(self):
         data, errors = self.extractData()
@@ -49,13 +52,13 @@ class Edit(Form):
         raise HTTPFound(url)
 
 
-@menuentry(DocumentActionsMenu)
 class Add(Form):
+    baseclass()
     context(IContainer)
     name('create')
     title(u"Create a new entry")
     require('zope.Public')
-    
+
     ignoreContent = True
 
     @property
@@ -64,8 +67,8 @@ class Add(Form):
 
     @property
     def fields(self):
-        return Fields(*schema.bind().get(self.context.model))
-        
+        return Fields(*schema.bind().get(self.model))
+
     @action(u'Add')
     def apply_changes(self):
         data, errors = self.extractData()
@@ -88,12 +91,36 @@ class Add(Form):
 
 
 @menuentry(DocumentActionsMenu)
+class AddShop(Add):
+    context(IShops)
+    model = Shop
+
+
+@menuentry(DocumentActionsMenu)
+class AddEmployee(Add):
+    context(IEmployees)
+    model = Employee
+
+
+@menuentry(DocumentActionsMenu)
+class AddIncident(Add):
+    context(IIncidents)
+    model = Incident
+
+
+@menuentry(DocumentActionsMenu)
+class AddComment(Add):
+    context(IComments)
+    model = Comment
+
+
+@menuentry(DocumentActionsMenu)
 class Delete(Form):
     context(IContent)
     name('delete')
     title(u"Deletion")
     require('zope.Public')
-    
+
     label = u"Are you sure you want to delete"
 
     @action(u'Delete')

@@ -16,7 +16,8 @@ from cromlech.security import Interaction
 
 from . import DB_KEY, Base
 from .utils import view_lookup, Site
-from .containers import Shops, Employees, Incidents
+from .models import Shop, Employee, Incident
+from .containers import ShopsRoot, EmployeesRoot, IncidentsRoot
 
 
 @implementer(IPublicationRoot)
@@ -24,9 +25,9 @@ class Root(Location):
     traversable('shops', 'employees', 'incidents')
 
     def __init__(self):
-        self.shops = Shops(self, 'shops')
-        self.employees = Employees(self, 'employees')
-        self.incidents = Incidents(self, 'incidents')
+        self.shops = ShopsRoot(self, 'shops', Shop)
+        self.employees = EmployeesRoot(self, 'employees', Employee)
+        self.incidents = IncidentsRoot(self, 'incidents', Incident)
 
     def getSiteManager(self):
         return getGlobalSiteManager()
@@ -49,7 +50,8 @@ class Application(object):
                     with SQLAlchemySession(self.engine, transaction_manager=tm):
                         response = self.publisher.publish(
                             request, root, handle_errors=True)
-        return response(environ, start_response)
+                        result = response(environ, start_response)
+        return result
 
 
 def app_factory(global_conf, url, zcml, langs):

@@ -5,7 +5,7 @@
     <tr tal:condition="context.shop">
       <th>Shop</th>
       <td>
-         <a tal:attriubute="href view.shop_url"
+         <a tal:attributes="href view.shop_url"
 	    tal:content="context.shop.name" />
       </td>
     </tr>

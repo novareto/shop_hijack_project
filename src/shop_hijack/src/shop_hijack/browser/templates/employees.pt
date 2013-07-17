@@ -1,6 +1,6 @@
 <div>
   <ul>
-    <li tal:repeat="employee iter(context)">
+    <li tal:repeat="employee context.values()">
         <a tal:attributes="href view.url(employee)"
 	   tal:content="employee.fullname" />
     </li>

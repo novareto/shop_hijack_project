@@ -23,9 +23,9 @@ class EmployeeView(Page):
     template = get_template('employee.pt')
 
     def update(self):
-        shop_base_url = get_absolute_url(Root.shops, self.request)
+        base_url = get_absolute_url(ROOT.shops, self.request)
         self.shop_url = "%s/%s" % (base_url, self.context.shop_id)
-        
+
 
 class ShopView(Page):
     """

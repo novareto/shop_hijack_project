@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine, Choice
+from zope.schema import TextLine, Choice, Text, Set
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+from .vocabularies import ShopSource, EmployeeSource
 
 
 positions = SimpleVocabulary((
@@ -24,23 +25,53 @@ class IIncident(IContent):
 
 
 class IEmployee(IContent):
-    fullname = TextLine(title=u'Full name')
-    position = Choice(title=u"Position in the company",
-                      vocabulary=positions)
+
+    shop_id = Choice(
+        title=u"Shop",
+        source=ShopSource(),
+        required=True)
+
+    fullname = TextLine(
+        title=u'Full name',
+        required=True)
+
+    position = Choice(
+        title=u"Position in the company",
+        vocabulary=positions,
+        required=True)
 
 
 class IShop(IContent):
-    pass
+
+    name = TextLine(
+        title=u'Name',
+        required=True)
+
+    address = Text(
+        title=u'Address',
+        required=True)
+
+    employees = Set(
+        title=u"Employees in the company",
+        value_type=Choice(source=EmployeeSource(id_only=False)),
+        required=True)
 
 
 class IContainer(Interface):
+    pass
 
-    model = Attribute("The model class")
-    
-    def add(item):
-        """
-        """
 
-    def delete(item):
-        """
-        """
+class IShops(IContainer):
+    pass
+
+
+class IIncidents(IContainer):
+    pass
+
+
+class IComments(IContainer):
+    pass
+
+
+class IEmployees(IContainer):
+    pass
