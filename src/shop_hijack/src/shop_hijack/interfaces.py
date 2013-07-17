@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine, Choice, Text, Set
+from zope.schema import TextLine, Choice, Text, Set, Date
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from .vocabularies import ShopSource, EmployeeSource
 
@@ -21,7 +21,15 @@ class IComment(IContent):
 
 
 class IIncident(IContent):
-    pass
+
+    date = Date(
+        title=u"Date of the Hijack",
+    )
+
+    weapons = Choice(
+        title=u"Weapons",
+        values=('Yes', 'No'),
+    )
 
 
 class IEmployee(IContent):
@@ -41,15 +49,32 @@ class IEmployee(IContent):
         required=True)
 
 
+
 class IShop(IContent):
 
-    name = TextLine(
-        title=u'Name',
-        required=True)
+    mnr = TextLine(
+        title=u"Member Id",
+    )
 
-    address = Text(
-        title=u'Address',
-        required=True)
+    name = TextLine(
+        title=u"Name",
+    )
+
+    street = TextLine(
+        title=u"Street",
+    )
+
+    nr = TextLine(
+        title=u"Number"
+    )
+
+    plz = TextLine(
+        title=u"Number of district"
+    )
+
+    place = TextLine(
+        title=u"Place"
+    )
 
     employees = Set(
         title=u"Employees in the company",
