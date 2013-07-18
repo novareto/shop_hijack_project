@@ -12,7 +12,6 @@ from .interfaces import IComments, IIncidents, IEmployees, IShops
 
 import grokcore.component as grok
 from dawnlight import DEFAULT
-from cromlech.dawnlight.consume import traverse
 from dawnlight.interfaces import IConsumer
 from cromlech.browser.interfaces import ITraverser
 from cromlech.dawnlight.directives import traversable
@@ -44,32 +43,16 @@ class Comments(components.Collection):
 
 
 class Content(Location):
-    attrs = frozenset()
-
-@implementer(IConsumer)
-class LocationAttributesConsumer(grok.Subscription):
-    grok.context(Content)
-    grok.order(1200)
-
-    __call__ = traverse
-
-    def _resolve(self, obj, ns, name, request):
-        name = name.encode('utf-8') if isinstance(name, unicode) else name
-        traversables_attrs = self.context.attrs
-        if ns == DEFAULT and name in traversables_attrs:
-            attr = getattr(obj, name, _marker)
-            if attr is not _marker:
-                return attr
-        return None
+    pass
 
 
 class Comment(Base, Content):
     """TODO: we want a docstring. Just do it _/.
     """
     schema(IComment)
+    traversable('incidents')
+    
     __tablename__ = 'comments'
-
-    attrs = frozenset(('incidents',))
 
     id = Column('id', Integer, primary_key=True)
     incident_id = Column('incident_id', Integer, ForeignKey('incidents.id'))
@@ -81,9 +64,9 @@ class Incident(Base, Content):
     """TODO: we want a docstring. Just do it _/.
     """
     schema(IIncident)
-    __tablename__ = 'incidents'
+    traversable('shop', 'comments')
 
-    attrs = frozenset(('shop', 'comments'))
+    __tablename__ = 'incidents'
 
     id = Column('id', Integer, primary_key=True)
     shop_id = Column('shop_id', Integer, ForeignKey('shops.id'))
@@ -99,9 +82,9 @@ class Employee(Base, Content):
     """TODO: we want a docstring. Just do it _/.
     """
     schema(IEmployee)
-    __tablename__ = 'employees'
+    traversable('shop')
 
-    attrs = frozenset(('shop',))
+    __tablename__ = 'employees'
 
     id = Column('id', Integer, primary_key=True)
     shop_id = Column('shop_id', Integer, ForeignKey('shops.id'))
@@ -113,9 +96,9 @@ class Shop(Base, Content):
     """TODO: we want a docstring. Just do it _/.
     """
     schema(IShop)
-    __tablename__ = 'shops'
+    traversable('incidents', 'employees')
 
-    attrs = frozenset(('incidents', 'employees'))
+    __tablename__ = 'shops'
 
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(255))

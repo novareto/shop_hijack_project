@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine, Choice, Text, Set, Date
+from zope.schema import TextLine, Choice, Text, Set, Date, Dict
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from .vocabularies import ShopSource, EmployeeSource
 
@@ -76,10 +76,10 @@ class IShop(IContent):
         title=u"Place"
     )
 
-    employees = Set(
+    employees = Dict(
         title=u"Employees in the company",
         value_type=Choice(source=EmployeeSource(id_only=False)),
-        required=True)
+        required=False)
 
 
 class IContainer(Interface):

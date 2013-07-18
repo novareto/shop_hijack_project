@@ -120,3 +120,8 @@ class Collection(MappedCollection):
         for key, value in self.items():
             self._receive(value, key)
             yield value
+
+    @collection.converter
+    def convert(self, other):
+        if isinstance(other, (list, set, tuple)):
+            return iter(other)
