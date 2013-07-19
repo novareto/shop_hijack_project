@@ -124,4 +124,7 @@ class Collection(MappedCollection):
     @collection.converter
     def convert(self, other):
         if isinstance(other, (list, set, tuple)):
-            return iter(other)
+            return other
+        if isinstance(other, dict):
+             return other.values()
+        raise ValueError

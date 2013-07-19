@@ -27,6 +27,9 @@ setup(name='shop_hijack',
          'fanstatic.libraries': [
             'shop_hijack = shop_hijack.resources:library',
          ],
+         'dolmen.collection.components': [
+             'dict = shop_hijack.browser.widgets:register',
+         ],
          'paste.app_factory': [
              'app = shop_hijack.app:app_factory',
          ],

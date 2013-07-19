@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import transaction
-from cromlech.browser import IPublicationRoot
+from cromlech.browser import IPublicationRoot, PublicationBeginsEvent
 from cromlech.configuration.utils import load_zcml
 from cromlech.dawnlight import DawnlightPublisher
 from cromlech.dawnlight.directives import traversable
@@ -13,6 +13,7 @@ from zope.component import getGlobalSiteManager
 from zope.interface import implementer
 from zope.location import Location
 from cromlech.security import Interaction
+from zope.event import notify
 
 from . import DB_KEY, Base
 from .utils import view_lookup, Site
@@ -48,6 +49,7 @@ class Application(object):
             with Interaction():
                 with Site(ROOT) as root:
                     with SQLAlchemySession(self.engine, transaction_manager=tm):
+                        notify(PublicationBeginsEvent(root, request))
                         response = self.publisher.publish(
                             request, root, handle_errors=True)
                         result = response(environ, start_response)
