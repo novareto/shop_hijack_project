@@ -1,3 +1,15 @@
 <div>
-
+  <h1 tal:content="context.name" />
+  <h2>Employees</h2>
+  <ul>
+    <li tal:repeat="e context.employees.values()">
+     <a tal:attributes="href view.url(e)" tal:content="e.fullname" />
+    </li>
+  </ul>
+  <h2>Incidents</h2>
+  <ul>
+    <li tal:repeat="i context.incidents.values()">
+     <a tal:attributes="href view.url(i)" tal:content="i.date" />
+    </li>
+  </ul>
 </div>

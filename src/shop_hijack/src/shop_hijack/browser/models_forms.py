@@ -11,7 +11,7 @@ from dolmen.message import send as website_message
 from dolmen.view import name, title
 from grokcore.component import baseclass
 from grokcore.security import require
-from uvc.layout.slots.menus import DocumentActionsMenu
+from uvc.tb_layout.menus import DocumentActionsMenu
 from uvclight import Form, context
 from zope.interface import implements
 

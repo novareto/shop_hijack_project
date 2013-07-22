@@ -14,6 +14,9 @@ class IncidentView(Page):
     context(IIncident)
     template = get_template('incident.pt')
 
+    def url(self, item):
+        return get_absolute_url(item, self.request)
+    
 
 class EmployeeView(Page):
     """
@@ -26,6 +29,10 @@ class EmployeeView(Page):
         base_url = get_absolute_url(ROOT.shops, self.request)
         self.shop_url = "%s/%s" % (base_url, self.context.shop_id)
 
+    def url(self, item):
+        return get_absolute_url(item, self.request)
+
+
 
 class ShopView(Page):
     """
@@ -33,3 +40,6 @@ class ShopView(Page):
     name('index')
     context(IShop)
     template = get_template('shop.pt')
+
+    def url(self, item):
+        return get_absolute_url(item, self.request)

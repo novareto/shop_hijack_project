@@ -3,7 +3,7 @@
     xmlns:grok="http://namespaces.zope.org/grok">
 
   <include package="uvclight" />
-  <include package="uvc.layout" />
+  <include package="uvc.tb_layout" />
   <include package="dolmen.menu" />
   <include package="cromlech.dawnlight" />
   <include package="cromlech.dawnlight" file="consumers.zcml" />

@@ -18,10 +18,11 @@ setup(name='shop_hijack',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'uvc.layout',
+          'uvc.tb_layout',
           'dolmen.content',
           'dolmen.message',
           'dolmen.menu',
+          'dolmen.breadcrumbs',
       ],
       entry_points={
          'fanstatic.libraries': [
