@@ -9,7 +9,7 @@ from dolmen.location import get_absolute_url
 from dolmen.menu import menuentry
 from dolmen.message import send as website_message
 from grokcore.component import baseclass
-from uvc.tb_layout.menus import DocumentActionsMenu
+from uvc.tb_layout.menus import ContextualActionsMenu
 from uvclight import Form, context, require, name, title
 
 from ..models import Shop, Comment, Incident, Employee
@@ -17,7 +17,7 @@ from ..interfaces import IContent, IContainer
 from ..interfaces import IShops, IComments, IIncidents, IEmployees
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class Edit(Form):
     context(IContent)
     name('edit')
@@ -87,31 +87,31 @@ class Add(Form):
         raise HTTPFound(url)
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class AddShop(Add):
     context(IShops)
     model = Shop
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class AddEmployee(Add):
     context(IEmployees)
     model = Employee
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class AddIncident(Add):
     context(IIncidents)
     model = Incident
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class AddComment(Add):
     context(IComments)
     model = Comment
 
 
-@menuentry(DocumentActionsMenu)
+@menuentry(ContextualActionsMenu)
 class Delete(Form):
     context(IContent)
     name('delete')
