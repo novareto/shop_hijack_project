@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from cromlech.browser import IView
 from zope.interface import Interface, Attribute
 from zope.schema import TextLine, Choice, Text, Set, Date, Dict
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
@@ -10,6 +11,26 @@ positions = SimpleVocabulary((
     SimpleTerm(value="Manager", title=u"Manager"),
     SimpleTerm(value="Employee", title=u"Employee"),
     ))
+
+
+class IPOSTView(IView):
+    pass
+
+
+class IPUTView(IView):
+    pass
+
+
+class IDELETEView(IView):
+    pass
+
+
+class IHEADView(IView):
+    pass
+
+
+class IOPTIONSView(IView):
+    pass
 
 
 class IContent(Interface):
